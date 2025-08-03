@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
 import FloatingLabelInput from './FloatingLabelInput'
 import { validateEmail, validatePassword } from '../utils/validate'
-import { createUserWithEmailAndPassword, updateProfile, signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth'
-import { auth } from '../utils/firebase'
+import { createUserWithEmailAndPassword, updateProfile, signInWithEmailAndPassword, sendPasswordResetEmail, signInWithPopup } from 'firebase/auth'
+import { auth, googleProvider } from '../utils/firebase'
 import { useStore } from '../store/store'
+import googleIcon from '../assets/google-icon.svg'
 
 const SignIn = ({ title, email: initialEmail = '' }) => {
   const [formType, setFormType] = useState(title)
@@ -83,6 +84,16 @@ const SignIn = ({ title, email: initialEmail = '' }) => {
     }
 
   }
+  const handleGoogleSignIn = () => {
+    signInWithPopup(auth, googleProvider).then((userCredential) => {
+      const user = userCredential.user;
+      setUser(user);
+    }).catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      setError(errorCode + ": " + errorMessage);
+    })
+  }
   return (
     <div className='relative z-10 flex md:items-center md:min-h-screen justify-center h-fit px-4 md:mt-[-30px]'>
       <div className='bg-black/70 w-full max-w-md p-12 rounded-2xl'>
@@ -113,6 +124,13 @@ const SignIn = ({ title, email: initialEmail = '' }) => {
           {resetPasswordSent && <p className="text-green-500 text-md font-medium text-left"><i className="ri-checkbox-circle-line mr-1"></i>Password reset email sent. Please check your email.</p>}
           <button type='submit' className='bg-red-600 hover:bg-red-700 text-white px-6 py-3 md:py-4 rounded text-lg md:text-xl font-medium transition-colors flex items-center justify-center gap-2 whitespace-nowrap cursor-pointer'> {formType}</button>
         </form>
+        <div className='text-white text-sm mt-4 px-1 flex flex-col items-center'>
+          <span className='text-center'>OR</span>
+          <button className='flex items-center gap-2 mt-2 bg-white/10 px-4 py-2 rounded-md cursor-pointer' onClick={() => {handleGoogleSignIn()}}>
+            <img src={googleIcon} alt="google" className='w-6 h-6' />
+            <span>Continue with Google</span>
+          </button>
+        </div>
         {formType === "Sign In" ?
           <>
           <p className='text-white text-sm mt-4 px-1'>Forgot Password?
@@ -133,8 +151,10 @@ const SignIn = ({ title, email: initialEmail = '' }) => {
             </button>
           </p>
         }
+        
 
       </div>
+      
     </div>
   )
 }
