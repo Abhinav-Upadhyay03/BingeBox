@@ -1,7 +1,11 @@
-import Homescreen from './pages/Homescreen'
+import { BrowserRouter as Router } from 'react-router-dom'
+import AppRoutes from './routes/AppRoutes'
+
 function App() {
   return (
-    <Homescreen />
+    <Router>
+      <AppRoutes />
+    </Router>
   )
 }
 
