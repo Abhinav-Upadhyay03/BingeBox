@@ -45,7 +45,7 @@ const TitleScreen = ({ onGetStarted }) => {
             </button>
             
           </div>
-          {error && <p className="text-red-500 text-sm mt-2 max-w-2xl mx-auto text-left pl-1">{error}</p>}
+          {error && <p className="text-red-500 text-md font-medium mt-2 max-w-2xl mx-auto text-left"><i className="ri-close-circle-line"></i> {error}</p>}
           
         </div>
     </div>
