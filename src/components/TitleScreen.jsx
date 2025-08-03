@@ -1,6 +1,7 @@
 import React from 'react'
 import { useState } from 'react'
 import FloatingLabelInput from './FloatingLabelInput'
+import { validateEmail, validatePassword } from '../utils/validate'
 const TitleScreen = ({ onGetStarted }) => {
     const [email, setEmail] = useState('')
     const [error, setError] = useState('')
@@ -9,17 +10,16 @@ const TitleScreen = ({ onGetStarted }) => {
       setEmail(e.target.value)
       setError('')
     }
-    const handleGetStarted = () => {
+    const handleGetStarted = (e) => {
+      e.preventDefault()
         if (!email) {
           setError('Please enter your email')
           return;
         }
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-        if (!emailRegex.test(email)) {
+        if (!validateEmail(email)) {
             setError('Please enter a valid email address')   
             return;
         }
-        
         onGetStarted(email);
     }
   return (
@@ -32,19 +32,19 @@ const TitleScreen = ({ onGetStarted }) => {
           <p className="text-white text-base md:text-lg mb-8 font-medium">
             Ready to watch? Enter your email to create or restart your membership.
           </p>
-          <div className="flex flex-col md:flex-row gap-4 max-w-2xl mx-auto">
+          <form onSubmit={(e) => handleGetStarted(e)} className="flex flex-col md:flex-row gap-4 max-w-2xl mx-auto">
             <FloatingLabelInput
               type="email"
               value={email}
               onChange={onEmailChange}
               label="Email address"
             />
-            <button className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 md:py-2 rounded text-lg md:text-xl font-medium transition-colors flex items-center justify-center gap-2 whitespace-nowrap cursor-pointer" onClick={() => handleGetStarted()}>
+            <button type='submit' className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 md:py-2 rounded text-lg md:text-xl font-medium transition-colors flex items-center justify-center gap-2 whitespace-nowrap cursor-pointer">
               Get Started
               <i className="ri-arrow-right-line"></i>
             </button>
             
-          </div>
+          </form>
           {error && <p className="text-red-500 text-md font-medium mt-2 max-w-2xl mx-auto text-left"><i className="ri-close-circle-line"></i> {error}</p>}
           
         </div>

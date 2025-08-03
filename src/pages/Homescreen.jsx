@@ -16,7 +16,6 @@ const Homescreen = () => {
     }
     
     const handleGetStarted = (email) => {
-        console.log("get started with email:", email);
         setSignUpEmail(email)
         setTitle("Sign Up")
         setIsSignIn(true)
@@ -34,7 +33,7 @@ const Homescreen = () => {
 
             <header className="relative z-10 flex items-center justify-between px-4 md:px-12 py-4">
                 <div className="text-red-600 text-2xl md:text-4xl font-bold tracking-tight">BingeBox</div>
-                <button onClick={() => handleSignIn()} className={`${!isSignIn ? "bg-red-600 hover:bg-red-700" : " "} px-4 py-2 rounded text-sm font-bold transition-colors cursor-pointer text-white`}>
+                <button onClick={() => handleSignIn()} className={`${!isSignIn ? "bg-red-600 hover:bg-red-700 rounded" : " hover:bg-black rounded-full"} px-4 py-2  text-sm font-bold transition-colors cursor-pointer text-white`}>
                     {!isSignIn ? "Sign In" : "Back"}
                 </button>
             </header>

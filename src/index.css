@@ -6,9 +6,9 @@ input:-webkit-autofill:active {
   -webkit-box-shadow: 0 0 0 1000px rgba(0, 0, 0, 0.6) inset !important;
   -webkit-text-fill-color: white !important;
   caret-color: white !important;
-  transition: background-color 5000s ease-in-out 0s; /* Chrome autofill hack */
-  border: 1px solid rgb(107 114 128 / 1); /* border-gray-500 */
-  border-radius: 0.5rem; /* rounded */
+  transition: background-color 5000s ease-in-out 0s; /* Autofill Hack :) */
+  border: 1px solid rgb(107 114 128 / 1);
+  border-radius: 0.5rem; 
 }
 
 
