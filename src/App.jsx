@@ -1,4 +1,4 @@
-import Homescreen from './components/Homescreen'
+import Homescreen from './pages/Homescreen'
 function App() {
   return (
     <Homescreen />
