@@ -1,16 +1,17 @@
 import React, { useState } from 'react'
 import FloatingLabelInput from './FloatingLabelInput'
 import { validateEmail, validatePassword } from '../utils/validate'
-import { createUserWithEmailAndPassword, updateProfile, signInWithEmailAndPassword } from 'firebase/auth'
+import { createUserWithEmailAndPassword, updateProfile, signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth'
 import { auth } from '../utils/firebase'
 import { useStore } from '../store/store'
 
 const SignIn = ({ title, email: initialEmail = '' }) => {
-  const [isSignIn, setIsSignIn] = useState(title === "Sign In")
+  const [formType, setFormType] = useState(title)
   const [name, setName] = useState('')
   const [email, setEmail] = useState(initialEmail)
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
+  const [resetPasswordSent, setResetPasswordSent] = useState(false)
   const { setUser } = useStore()
 
   const clearStates = () => {
@@ -18,14 +19,16 @@ const SignIn = ({ title, email: initialEmail = '' }) => {
     setName('')
     setEmail('')
     setPassword('')
+    setResetPasswordSent(false)
   }
   const clearError = () => {
     setError('')
+    setResetPasswordSent(false)
   }
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    if (!isSignIn && !name) {
+    if (formType === "Sign Up" && !name) {
       setError('Please enter your name')
       return;
     }
@@ -37,23 +40,23 @@ const SignIn = ({ title, email: initialEmail = '' }) => {
       setError('Please enter a valid email address')
       return;
     }
-    if (!password) {
+    if (formType !="Reset Password" && !password) {
       setError('Please enter your password')
       return;
     }
-    if (!validatePassword(password)) {
+    if (formType !="Reset Password" && !validatePassword(password)) {
       setError('Password must be at least 8 characters long')
       return;
     }
 
-    if (isSignIn) {
+    if (formType === "Sign In") {
       signInWithEmailAndPassword(auth, email, password).then((userCredential) => {
         const user = userCredential.user;
         setUser(user);
       }).catch((error) => {
         setError("Invalid credentials. Please try again.");
       })
-    } else {
+    } else if (formType === "Sign Up") {
       createUserWithEmailAndPassword(auth, email, password).then((userCredential) => {
         const user = userCredential.user;
         updateProfile(user, {
@@ -69,15 +72,23 @@ const SignIn = ({ title, email: initialEmail = '' }) => {
         const errorMessage = error.message;
         setError(errorCode + ": " + errorMessage);
       })
+    } else {
+      sendPasswordResetEmail(auth, email).then(() => {
+        setResetPasswordSent(true);
+      }).catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        setError(errorCode + ": " + errorMessage);
+      })
     }
 
   }
   return (
     <div className='relative z-10 flex md:items-center md:min-h-screen justify-center h-fit px-4 md:mt-[-30px]'>
       <div className='bg-black/70 w-full max-w-md p-12 rounded-2xl'>
-        <h1 className='text-white text-3xl md:text-4xl lg:text-3xl font-bold mb-4 leading-tight'>{isSignIn ? "Sign In" : "Sign Up"}</h1>
+        <h1 className='text-white text-3xl md:text-4xl lg:text-3xl font-bold mb-4 leading-tight'>{formType}</h1>
         <form onSubmit={handleSubmit} className='flex flex-col gap-4'>
-          {!isSignIn ?
+          {formType === "Sign Up" ?
             <FloatingLabelInput
               type='text'
               value={name}
@@ -91,23 +102,33 @@ const SignIn = ({ title, email: initialEmail = '' }) => {
             onChange={(e) => { setEmail(e.target.value); clearError() }}
             label='Email address'
           />
+          {formType !== "Reset Password" &&
           <FloatingLabelInput
             type='password'
             value={password}
             onChange={(e) => { setPassword(e.target.value); clearError() }}
             label='Password'
-          />
+          />}
           {error && <p className="text-red-500 text-md font-medium text-left"><i className="ri-close-circle-line"></i> {error}</p>}
-          <button type='submit' className='bg-red-600 hover:bg-red-700 text-white px-6 py-3 md:py-4 rounded text-lg md:text-xl font-medium transition-colors flex items-center justify-center gap-2 whitespace-nowrap cursor-pointer'> {isSignIn ? "Sign In" : "Sign Up"}</button>
+          {resetPasswordSent && <p className="text-green-500 text-md font-medium text-left"><i className="ri-checkbox-circle-line mr-1"></i>Password reset email sent. Please check your email.</p>}
+          <button type='submit' className='bg-red-600 hover:bg-red-700 text-white px-6 py-3 md:py-4 rounded text-lg md:text-xl font-medium transition-colors flex items-center justify-center gap-2 whitespace-nowrap cursor-pointer'> {formType}</button>
         </form>
-        {isSignIn ?
-          <p className='text-white text-sm mt-4 px-1'>New to BingeBox?
-            <button className='text-red-600 font-bold ml-1 cursor-pointer' onClick={() => { setIsSignIn(false); clearStates() }}>
+        {formType === "Sign In" ?
+          <>
+          <p className='text-white text-sm mt-4 px-1'>Forgot Password?
+            <button className='font-bold ml-1 cursor-pointer' onClick={() => { setFormType("Reset Password"); clearStates() }}>
+              Click to reset
+            </button>
+          </p>
+          <p className='text-white text-sm mt-2 px-1'>New to BingeBox?
+            <button className='text-red-600 font-bold ml-1 cursor-pointer' onClick={() => { setFormType("Sign Up"); clearStates() }}>
               Sign Up
             </button>
-          </p> :
-          <p className='text-white text-sm mt-4 px-1'>Already have an account?
-            <button className='text-red-600 font-bold ml-1 cursor-pointer' onClick={() => { setIsSignIn(true); clearStates() }}>
+          </p> 
+          </>
+          :
+          <p className='text-white text-sm mt-4 px-1'>{formType === "Sign Up" && "Already have an account?"} {formType === "Reset Password" && "Recalled password? Go back to"}
+            <button className='text-red-600 font-bold ml-1 cursor-pointer' onClick={() => { setFormType("Sign In"); clearStates() }}>
               Sign In
             </button>
           </p>
