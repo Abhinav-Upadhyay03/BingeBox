@@ -27,7 +27,7 @@ const ServerModal = ({ movie, isOpen, onClose, onServerSelect }) => {
           </h3>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-white transition-colors"
+            className="text-gray-400 hover:text-white transition-colors cursor-pointer"
           >
             <i className="ri-close-circle-line text-xl"></i>
           </button>
