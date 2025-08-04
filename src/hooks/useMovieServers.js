@@ -16,12 +16,7 @@ const useMovieServers = (movieId) => {
       const videoData = await getMovieVideos(movieId)
       const availableServers = videoData.results || []
       
-      // Filter for available video sources (trailers, clips, etc.)
-      const validServers = availableServers.filter(video => 
-        video.site === 'YouTube' && video.type === 'Trailer'
-      )
-      
-      setServers(validServers)
+      setServers(availableServers)
     } catch (error) {
       console.error('Error fetching servers:', error)
       setError('Failed to load available servers')

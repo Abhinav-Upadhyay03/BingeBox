@@ -6,10 +6,8 @@ const ServerModal = ({ movie, isOpen, onClose, onServerSelect }) => {
 
   const handleServerSelect = (server) => {
     if (server.site === 'YouTube') {
-      // Open YouTube trailer in new tab
       window.open(`https://www.youtube.com/watch?v=${server.key}`, '_blank')
     } else {
-      // For other servers, you can implement custom streaming logic
       onServerSelect(server)
     }
     onClose()
@@ -65,8 +63,8 @@ const ServerModal = ({ movie, isOpen, onClose, onServerSelect }) => {
                       <i className="ri-play-fill text-white"></i>
                     </div>
                     <div>
-                      <p className="text-white font-medium text-sm">
-                        Server {index + 1}
+                      <p className="text-white font-medium text-sm text-ellipsis overflow-hidden whitespace-nowrap max-w-[200px]">
+                        {server.name}
                       </p>
                       <p className="text-gray-400 text-xs">
                         {server.site} • {server.type}
