@@ -11,4 +11,6 @@ export const useStore = create((set) => ({
   setTopRatedMovies: (movies) => set({ topRatedMovies: movies }),
   upcomingMovies: [],
   setUpcomingMovies: (movies) => set({ upcomingMovies: movies }),
+  searchResults: [],
+  setSearchResults: (results) => set({ searchResults: results }),
 }))

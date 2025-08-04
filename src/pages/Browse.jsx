@@ -1,5 +1,4 @@
 import React from 'react'
-import useNowPlayingMovies from '../hooks/useNowPlayingMovies'
 import useMovieCategories from '../hooks/useMovieCategories'
 import Header from '../components/Header'
 import HeroSection from '../components/HeroSection'
@@ -8,7 +7,6 @@ import Footer from '../components/Footer'
 import { useStore } from '../store/store'
 
 const Browse = () => {
-  useNowPlayingMovies();
   useMovieCategories();
   
   const { 
