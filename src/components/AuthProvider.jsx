@@ -21,9 +21,10 @@ const AuthProvider = ({ children }) => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-black flex flex-col items-center justify-center gap-2">
-        <i className="ri-loader-2-line animate-spin text-white text-xl"></i>
-        <span className="text-white text-lg font-medium font-sans">Loading...</span>
+      <div className="relative h-screen bg-gradient-to-b from-gray-900 to-black">
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600"></div>
+        </div>
       </div>
     )
   }
