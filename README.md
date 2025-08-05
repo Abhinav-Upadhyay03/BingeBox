@@ -1,12 +1,52 @@
-# React + Vite
+# 🎬 Binge Box
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**Binge Box** is a modern, responsive movie listing web application that lets users explore and watch trailers of movies across multiple categories. With secure authentication and real-time search, it provides a seamless browsing experience powered by the TMDB API.
 
-Currently, two official plugins are available:
+## 🚀 Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- 🔐 **User Authentication** with Firebase (Email/Password & Google Sign-In)
+- 🔒 **Protected Routes** – only accessible to signed-in users
+- 🎞️ **Movie Categories**: Popular, Top Rated, Now Playing, Upcoming
+- 🔍 **Real-time Search** to find movies instantly
+- ▶️ **Watch Trailers & More** – click on any movie to open a modal showing available YouTube trailers, teasers, and behind-the-scenes videos
+- 🔗 Users can choose a video and get redirected to the corresponding YouTube page
+- 💾 **Session Persistence** – user data and login state are retained on refresh using Firebase
+- 💡 **Clean State Management** using Zustand
+- 📱 **Responsive UI** built with Tailwind CSS
 
-## Expanding the ESLint configuration
+## 🛠️ Tech Stack
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- **React.js** – frontend UI framework
+- **Tailwind CSS** – for fast and responsive styling
+- **Zustand** – lightweight and scalable state management
+- **Firebase** – authentication and hosting
+- **TMDB API** – to fetch movie data, trailers, teasers, and more
+
+## 🔐 Authentication
+
+- Users can sign in using **email/password** or **Google Sign-In**
+- All movie listing routes are protected and require login
+- Firebase handles user session persistence across refreshes
+
+## 🎥 Play Movie Feature
+
+- Clicking the **"Play"** button on any movie card opens a **modal window**
+- The modal lists all available **trailers**, **teasers**, and **behind-the-scenes videos** fetched from TMDB's video API
+- Selecting a video **redirects users to YouTube** to watch the content
+
+## 🌐 Live Demo
+
+> binge-box-ivory.vercel.app
+
+## 📝 License
+
+This project is open source and available under the [MIT License](LICENSE).
+
+---
+
+### 📬 Contact
+
+For any feedback or queries:
+
+- LinkedIn: [Abhinav Upadhyay](https://www.linkedin.com/in/abhinav-upadhyay-67973821b/)
+- Email: abhi.u3131@gmail.com
