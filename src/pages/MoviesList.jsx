@@ -16,6 +16,41 @@ const MoviesList = () => {
   const [hasNextPage, setHasNextPage] = useState(false)
   const { setSearchResults } = useStore()
 
+  // Helper function to filter movies with posters
+  const filterMoviesWithPosters = (movies) => {
+    return movies.filter(movie => movie.poster_path)
+  }
+
+  // Helper function to fetch movies until we have enough with posters
+  const fetchMoviesWithPosters = async (fetchFunction, page, targetCount = 20) => {
+    let allMovies = []
+    let currentPage = page
+    let totalPagesCount = 1
+    
+    while (allMovies.length < targetCount && currentPage <= 500) { // Safety limit
+      try {
+        const data = await fetchFunction(currentPage)
+        const filteredMovies = filterMoviesWithPosters(data.results || [])
+        allMovies = [...allMovies, ...filteredMovies]
+        totalPagesCount = data.total_pages || 1
+        
+        if (data.results?.length === 0 || currentPage >= totalPagesCount) {
+          break
+        }
+        currentPage++
+      } catch (error) {
+        console.error('Error fetching movies:', error)
+        break
+      }
+    }
+    
+    return {
+      movies: allMovies.slice(0, targetCount),
+      totalPages: totalPagesCount,
+      lastFetchedPage: currentPage - 1
+    }
+  }
+
   useEffect(() => {
     const fetchMovies = async () => {
       setIsLoading(true)
@@ -30,40 +65,44 @@ const MoviesList = () => {
 
         if (search) {
           // Handle search results
-          const searchData = await searchMovies(search, page)
-          movieData = searchData.results || []
-          totalPagesCount = searchData.total_pages || 1
+          const searchData = await fetchMoviesWithPosters(
+            (pageNum) => searchMovies(search, pageNum),
+            page,
+            20
+          )
+          movieData = searchData.movies
+          totalPagesCount = searchData.totalPages
           pageTitle = `Showing results for "${search}"`
           setSearchResults(movieData) // Store search results
         } else if (category) {
           // Handle category browsing
+          let fetchFunction
           switch (category) {
             case 'popular':
-              const popularData = await getPopularMovies(page)
-              movieData = popularData.results || []
-              totalPagesCount = popularData.total_pages || 1
+              fetchFunction = getPopularMovies
               pageTitle = 'Popular Movies'
               break
             case 'top-rated':
-              const topRatedData = await getTopRatedMovies(page)
-              movieData = topRatedData.results || []
-              totalPagesCount = topRatedData.total_pages || 1
+              fetchFunction = getTopRatedMovies
               pageTitle = 'Top Rated Movies'
               break
             case 'upcoming':
-              const upcomingData = await getUpcomingMovies(page)
-              movieData = upcomingData.results || []
-              totalPagesCount = upcomingData.total_pages || 1
+              fetchFunction = getUpcomingMovies
               pageTitle = 'Upcoming Movies'
               break
             case 'now-playing':
-              const nowPlayingData = await getNowPlayingMovies(page)
-              movieData = nowPlayingData.results || []
-              totalPagesCount = nowPlayingData.total_pages || 1
+              fetchFunction = getNowPlayingMovies
               pageTitle = 'Now Playing Movies'
               break
             default:
               pageTitle = 'Movies'
+              break
+          }
+          
+          if (fetchFunction) {
+            const categoryData = await fetchMoviesWithPosters(fetchFunction, page, 20)
+            movieData = categoryData.movies
+            totalPagesCount = categoryData.totalPages
           }
         }
 

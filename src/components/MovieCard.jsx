@@ -23,7 +23,13 @@ const MovieCard = ({ movie, variant = 'grid' }) => {
   if (variant === 'grid') {
     return (
       <>
-        <div className="group cursor-pointer transition-transform duration-200 hover:scale-102">
+        <div 
+          className="group cursor-pointer transition-transform duration-200 hover:scale-102"
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+          onTouchStart={() => setIsHovered(true)}
+          onTouchEnd={() => setTimeout(() => setIsHovered(false), 2000)}
+        >
           <div className="relative overflow-hidden rounded-lg aspect-[2/3] bg-gray-800">
             {!imageError && movie.poster_path ? (
               <img
@@ -43,8 +49,12 @@ const MovieCard = ({ movie, variant = 'grid' }) => {
               </div>
             )}
             
-            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition-all duration-200 flex items-center justify-center">
-              <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-white text-center p-2">
+            <div className={`absolute inset-0 transition-all duration-200 flex items-center justify-center ${
+              isHovered ? 'bg-black/50' : 'bg-black/0 group-hover:bg-black/50'
+            }`}>
+              <div className={`transition-opacity duration-200 text-white text-center p-2 ${
+                isHovered ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+              }`}>
                 <h3 className="font-semibold text-sm line-clamp-2 mb-3">{movie.title}</h3>
                 <p className="text-xs text-gray-300 mb-3">
                   {movie.release_date ? new Date(movie.release_date).getFullYear() : 'N/A'} • {movie.vote_average?.toFixed(1) || 'N/A'} ⭐
@@ -80,6 +90,8 @@ const MovieCard = ({ movie, variant = 'grid' }) => {
         className="relative flex-shrink-0 transition-all duration-300 hover:scale-102 hover:z-10"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
+        onTouchStart={() => setIsHovered(true)}
+        onTouchEnd={() => setTimeout(() => setIsHovered(false), 2000)}
       >
         <div className="w-48 md:w-56">
           <img

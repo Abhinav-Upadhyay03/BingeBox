@@ -13,6 +13,35 @@ const SearchBar = () => {
   const searchRef = useRef(null)
   const navigate = useNavigate()
 
+  // Helper function to filter movies with posters
+  const filterMoviesWithPosters = (movies) => {
+    return movies.filter(movie => movie.poster_path)
+  }
+
+  // Helper function to fetch search results until we have enough with posters
+  const fetchSearchResultsWithPosters = async (query, targetCount = 10) => {
+    let allMovies = []
+    let currentPage = 1
+    
+    while (allMovies.length < targetCount && currentPage <= 5) { // Safety limit
+      try {
+        const data = await searchMovies(query, currentPage)
+        const filteredMovies = filterMoviesWithPosters(data.results || [])
+        allMovies = [...allMovies, ...filteredMovies]
+        
+        if (data.results?.length === 0) {
+          break
+        }
+        currentPage++
+      } catch (error) {
+        console.error('Error searching movies:', error)
+        break
+      }
+    }
+    
+    return allMovies.slice(0, targetCount)
+  }
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (searchRef.current && !searchRef.current.contains(event.target)) {
@@ -33,8 +62,8 @@ const SearchBar = () => {
 
       setIsLoading(true)
       try {
-        const data = await searchMovies(searchQuery)
-        setSearchResults(data.results || [])
+        const filteredResults = await fetchSearchResultsWithPosters(searchQuery.trim(), 10)
+        setSearchResults(filteredResults)
       } catch (error) {
         console.error('Error searching movies:', error)
         setSearchResults([])
